@@ -95,3 +95,25 @@ WHERE collectors.id IN (
 
 
 --- total amount of sales for each artist who has sold at least one painting in our gallery.
+
+SELECT
+artists.first_name,
+artists.last_name,
+artist_sales.sales
+FROM artists
+JOIN (
+	SELECT artist_id, SUM(sale_price) AS sales
+	FROM sales_1
+	GROUP BY artist_id
+) AS artist_sales
+ON artists.id = artist_sales.artist_id;
+
+---- the first names and the last names of the artists who had zero sales with our gallery
+
+SELECT first_name, last_name
+FROM artists
+WHERE NOT EXISTS (
+	SELECT * FROM sales_1
+	WHERE sales_1.artist_id = artists.id
+);
+
